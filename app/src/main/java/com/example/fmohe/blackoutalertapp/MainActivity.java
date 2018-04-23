@@ -41,8 +41,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Buttons
     private Button startButton;
     private Button stopButton;
-
     private View.OnClickListener listener;
+
+    //Writing to files
+    private String dir = Environment.getExternalStorageDirectory().toString() + "/BlackoutAlertData/";
+    private File currDataFile;
+    private FileOutputStream fileOutputStream;
 
     //Rounds to number of places
     public double round(double value, int places) {
@@ -59,42 +63,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case R.id.startButton:
                 sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+
+                //Create file
+                String name = Calendar.getInstance().getTime().toString();
+                name = name.replaceAll(" ", "_").toLowerCase();
+                currDataFile = new File(dir, name + ".txt");
+                try {
+                    fileOutputStream = new FileOutputStream(currDataFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.stopButton:
                 sensorManager.unregisterListener(this, accelerometer);
                 sensorManager.unregisterListener(this, gyroscope);
                 accelData.setText("Stopped!");
                 gyroData.setText("Stopped!");
+
+                //Close file
+                try {
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
-        }
-    }
-
-    //Writes data to external storage
-    public void writeData() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            File root = Environment.getExternalStorageDirectory();
-            File dir = new File(root.getAbsolutePath() + "/BlackoutAlertData");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            //Filename based on current date + time
-            String name = Calendar.getInstance().getTime().toString();
-            name = name.replaceAll(" ", "_").toLowerCase();
-            File dataFile = new File(dir, name);
-
-            //Get data
-            String data = accelData.getText() + "|" + gyroData.getText() + "\n";
-
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(dataFile);
-                fileOutputStream.write(data.getBytes());
-                fileOutputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -116,6 +108,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //Button listeners
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
+
+        //Create files directory
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            File root = Environment.getExternalStorageDirectory();
+            File dir = new File(root.toString() + "/BlackoutAlertData");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+        }
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -140,7 +142,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             gyroData.setText("{" + round(g_x, 4) + ", " + round(g_y, 4) + ", " + round(g_z, 4) + "}\n");
         }
 
-//        writeData();
+        //Write to file
+        String data = accelData.getText() + "|" + gyroData.getText();
+        try {
+            fileOutputStream.write(data.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
