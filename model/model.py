@@ -63,7 +63,7 @@ Y_train = None
 X_test = None 
 Y_test = None 
 for file in os.listdir(train_dir):
-    if file == '.DS_Store' or file == 'coma':
+    if file == '.DS_Store' or file == 'coma':  # remove soon
         continue
     features, labels = extract_features_labels(file)
     if X_train is None:
@@ -80,7 +80,8 @@ clf = svm.SVC()
 X, y = X_train, Y_train
 clf.fit(X, y)
 
-# clf.predict(test_data)
+print(clf.predict(X_train))
+print(Y_train)
 ############### End Model Stuff ############################
 # for folder in os.listdir(train_dir):
 #     print(folder)
