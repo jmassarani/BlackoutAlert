@@ -6,7 +6,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
+@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class MainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
 
     private SensorManager sensorManager;
@@ -55,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private FileOutputStream fileOutputStream;
     private RadioGroup radioGroup;
 
-    private String prompt_text;
     private ArrayList<String> words = new ArrayList<String>(){{
         add("fork");
         add("general");
@@ -251,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        prompt_text = input.getText().toString();
+                        String prompt_text = input.getText().toString();
 
                         String d = three_words + "\n" + prompt_text;
                         //Save user output to file
