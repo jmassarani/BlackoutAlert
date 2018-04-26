@@ -10,12 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Buttons
     private Button startButton;
     private Button stopButton;
-    private View.OnClickListener listener;
 
     //Writing to files
     private String dir = Environment.getExternalStorageDirectory().toString() + "/BlackoutAlertData/";
     private File currDataFile;
     private FileOutputStream fileOutputStream;
+    private RadioGroup radioGroup;
 
     //Rounds to number of places
     public double round(double value, int places) {
@@ -67,6 +67,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 //Create file
                 String name = Calendar.getInstance().getTime().toString();
                 name = name.replaceAll(" ", "_").toLowerCase();
+
+                //Get file name input
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                RadioButton curr = (RadioButton) findViewById(selectedId);
+                String text = curr.getText().toString();
+                name = name + "_" + text;
+
                 currDataFile = new File(dir, name + ".txt");
                 try {
                     fileOutputStream = new FileOutputStream(currDataFile);
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         gyroData = (TextView) findViewById(R.id.gyroData);
         startButton = (Button) findViewById(R.id.startButton);
         stopButton = (Button) findViewById(R.id.stopButton);
+        radioGroup = (RadioGroup) findViewById(R.id.radioButtons);
 
         //Button listeners
         startButton.setOnClickListener(this);
