@@ -1,6 +1,7 @@
 from sklearn import svm
 import numpy as np
 import os
+from Levenshtein import distance
 
 ACCEL = 0
 GYRO = 1
@@ -82,6 +83,8 @@ clf.fit(X, y)
 
 print(clf.predict(X_train))
 print(Y_train)
+
+
 ############### End Model Stuff ############################
 # for folder in os.listdir(train_dir):
 #     print(folder)
