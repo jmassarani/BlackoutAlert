@@ -17,6 +17,7 @@ rev_idx = {
     'coma': 2
 }
 
+
 def calculate_levenshtein(filename):
     with open(filename, 'r') as f:
         data = f.read()
@@ -25,24 +26,23 @@ def calculate_levenshtein(filename):
     d = data.split('\n')
     correct = d[0]
     user = d[1]
-    
+
     return distance(correct, user)
+
 
 def extract_features_labels(folder, task, train=True):
     features, labels = None, None
     for file in os.listdir(train_dir + folder):
-        
+
         if file != task or folder == 'euphoria':
             continue
-        print(file, folder, 'wut')
-        for txt in os.listdir(train_dir+ folder + '/' +file):
+        for txt in os.listdir(train_dir + folder + '/' + file):
             if txt == '.DS_Store':
                 continue
             with open(train_dir + folder + '/' + file + '/' + txt, 'r') as f:
                 string_data = f.read()
 
             list_data = (string_data.split('\n'))
-            length = len(list_data)
             list_data = list(filter(None, list_data))[500:len(list_data)-500]
             new_features, new_labels = [], []
             acc = 0
@@ -70,8 +70,8 @@ def extract_features_labels(folder, task, train=True):
                     accel_mean = np.mean(accel_acc)
                     gyro_mean = np.mean(gyro_acc)
                     new_features += [accel_mean, gyro_mean]
-                    
-                    new_labels +=[rev_idx[folder]]
+
+                    new_labels += [rev_idx[folder]]
                     if features is not None:
                         features += [new_features]
                         labels += (new_labels)
@@ -86,11 +86,12 @@ def extract_features_labels(folder, task, train=True):
     return features[2:], labels[1:]
 ###################### End load and Process Data ###########################
 
+
 ############### Model Stuff ################################
-X_train = None  
-Y_train = None 
-X_test = None 
-Y_test = None 
+X_train = None
+Y_train = None
+X_test = None
+Y_test = None
 for file in os.listdir(train_dir):
     if file == '.DS_Store' or file == 'euphoria':  # remove soon
         continue
@@ -101,7 +102,7 @@ for file in os.listdir(train_dir):
             Y_train = np.array(labels)
     else:
         X_train = np.append(X_train, features, axis=0)
-        Y_train = np.append(Y_train, labels, axis= 0)
+        Y_train = np.append(Y_train, labels, axis=0)
 # print(X_train, Y_train)
 print(X_train.shape, Y_train.shape)
 clf = svm.SVC()
