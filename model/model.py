@@ -21,7 +21,7 @@ rev_idx = {
 def calculate_levenshtein(filename):
     with open(filename, 'r') as f:
         data = f.read()
-    f.close()
+    
 
     d = data.split('\n')
     correct = d[0]
@@ -114,8 +114,8 @@ print(Y_train)
 
 
 ############## End Model Stuff ############################
-for folder in os.listdir(train_dir):
-    print(folder)
-    if folder == '.DS_Store':
-        continue
-    extract_features_labels(folder)
+# for folder in os.listdir(train_dir):
+#     print(folder)
+#     if folder == '.DS_Store':
+#         continue
+#     extract_features_labels(folder)
