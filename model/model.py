@@ -16,6 +16,7 @@ rev_idx = {
     'euphoria': 1,
     'coma': 2
 }
+
 def extract_features_labels(folder, train=True):
     features, labels = None, None
     for file in os.listdir(train_dir + folder):
