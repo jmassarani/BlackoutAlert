@@ -16,6 +16,18 @@ rev_idx = {
     'euphoria': 1,
     'coma': 2
 }
+
+def calculate_levenshtein(filename):
+    with open(filename, 'r') as f:
+        data = f.read()
+    f.close()
+
+    d = data.split('\n')
+    correct = d[0]
+    user = d[1]
+    
+    return distance(correct, user)
+
 def extract_features_labels(folder, task, train=True):
     features, labels = None, None
     for file in os.listdir(train_dir + folder):
@@ -100,9 +112,9 @@ print(clf.predict(X_train))
 print(Y_train)
 
 
-############### End Model Stuff ############################
-# for folder in os.listdir(train_dir):
-#     print(folder)
-#     if folder == '.DS_Store':
-#         continue
-#     extract_features_labels(folder)
+############## End Model Stuff ############################
+for folder in os.listdir(train_dir):
+    print(folder)
+    if folder == '.DS_Store':
+        continue
+    extract_features_labels(folder)
