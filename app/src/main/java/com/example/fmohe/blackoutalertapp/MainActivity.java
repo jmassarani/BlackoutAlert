@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         //Save user output to file
                         String cal = Calendar.getInstance().getTime().toString();
                         cal = cal.replaceAll(" ", "_").toLowerCase();
-                        File f = new File(dir,cal + "_USER_PROMPTS.txt");
+                        File f = new File(dir,cal + "_ USER_PROMPTS.txt");
                         try {
                             FileOutputStream stream = new FileOutputStream(f);
                             stream.write(d.getBytes());
