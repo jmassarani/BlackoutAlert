@@ -111,14 +111,14 @@ for task in tasks:
             X_train = np.append(X_train, features, axis=0)
             Y_train = np.append(Y_train, labels, axis=0)
     
-    shuffle_split = ShuffleSplit(len(X_train), test_size=0.4, random_state=0)
+    shuffle_split = ShuffleSplit(len(X_train), test_size=0.5, random_state=0)
     train_idx, test_idx = next(iter(shuffle_split))
     X = X_train[train_idx]
     y = Y_train[train_idx]
     
     test = X_train[test_idx]
     actual_labels = Y_train[test_idx]
-    clf = KNeighborsClassifier(n_neighbors=5)
+    clf = KNeighborsClassifier(n_neighbors=15, weights='distance')
     clf.fit(X, y)
     predicted = clf.predict(test)
     print(task, "Accuracy: {:.2f}%".format(np.mean(predicted == actual_labels) * 100))
@@ -136,15 +136,27 @@ for task in tasks:
     # clf.fit(X.values, y.values) 
 
     # Plot Decision Region using mlxtend's awesome plotting function
+    clf = KNeighborsClassifier(n_neighbors=15)
+    
+    X = X_train
+    y = Y_train
+    print(X)
+    clf.fit(X, y)
     plot_decision_regions(X=X, 
                         y=y,
                         clf=clf, 
-                        legend=2)
-
+                        legend=2,
+                        colors='blue,green,red')
+    key = {
+        'heel_to_toe': 'Heel To Toe',
+        'still': 'Still',
+        'one_leg': 'One Leg Stand',
+        'straight_line': 'Walking In Straight Line'
+    }
     # Update plot object with X/Y axis labels and Figure Title
-    plt.xlabel('placeholder1', size=14)
-    plt.ylabel('placeholder 2', size=14)
-    plt.title('SVM Decision Region Boundary For: ' + task +' task', size=16)
+    plt.xlabel('Accelerometer Magnitude', size=14)
+    plt.ylabel('Gyroscope Magnitude', size=14)
+    plt.title('KNN Decision Region Boundary For ' + key[task] +' task', size=16)
     plt.show()
 # print(X_train, Y_train)
 
