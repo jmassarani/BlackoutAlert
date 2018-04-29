@@ -6,6 +6,7 @@ from sklearn.cross_validation import ShuffleSplit
 import pandas as pd
 from mlxtend.plotting import plot_decision_regions
 import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
 ACCEL = 0
 GYRO = 1
 WINDOW_SIZE = 120  # should be x2 since two lines corresponds to one reading
@@ -36,8 +37,7 @@ def calculate_levenshtein(filename):
 def extract_features_labels(folder, task, train=True):
     features, labels = None, None
     for file in os.listdir(train_dir + folder):
-
-        if file != task or folder == 'euphoria':
+        if file != task:
             continue
         for txt in os.listdir(train_dir + folder + '/' + file):
             if txt == '.DS_Store':
@@ -100,7 +100,7 @@ for task in tasks:
     Y_train = None
     for file in os.listdir(train_dir):
         print(file)
-        if file == '.DS_Store' or file == 'euphoria':  # remove soon
+        if file == '.DS_Store':  # remove soon
             continue
         features, labels = extract_features_labels(file, task)
         if X_train is None:
@@ -110,6 +110,7 @@ for task in tasks:
         else:
             X_train = np.append(X_train, features, axis=0)
             Y_train = np.append(Y_train, labels, axis=0)
+    
     shuffle_split = ShuffleSplit(len(X_train), test_size=0.4, random_state=0)
     train_idx, test_idx = next(iter(shuffle_split))
     X = X_train[train_idx]
@@ -117,7 +118,7 @@ for task in tasks:
     
     test = X_train[test_idx]
     actual_labels = Y_train[test_idx]
-    clf = svm.SVC()
+    clf = KNeighborsClassifier(n_neighbors=5)
     clf.fit(X, y)
     predicted = clf.predict(test)
     print(task, "Accuracy: {:.2f}%".format(np.mean(predicted == actual_labels) * 100))
