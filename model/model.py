@@ -26,7 +26,6 @@ rev_idx = {
 def calculate_levenshtein(filename):
     with open(filename, 'r') as f:
         data = f.read()
-    
 
     d = data.split('\n')
     correct = d[0]
@@ -110,20 +109,23 @@ for task in tasks:
         else:
             X_train = np.append(X_train, features, axis=0)
             Y_train = np.append(Y_train, labels, axis=0)
-    
+
     shuffle_split = ShuffleSplit(len(X_train), test_size=0.5, random_state=0)
     train_idx, test_idx = next(iter(shuffle_split))
     X = X_train[train_idx]
     y = Y_train[train_idx]
-    
+
     test = X_train[test_idx]
     actual_labels = Y_train[test_idx]
     clf = KNeighborsClassifier(n_neighbors=15, weights='distance')
     clf.fit(X, y)
     predicted = clf.predict(test)
-    print(task, "Accuracy: {:.2f}%".format(np.mean(predicted == actual_labels) * 100))
-    print(task, "Precision: {:.2f}%".format(precision_score(actual_labels, predicted, average='macro')*100))
-    print(task, "Recall: {:.2f}%".format(recall_score(actual_labels, predicted, average='macro')*100))
+    print(task, "Accuracy: {:.2f}%".format(
+        np.mean(predicted == actual_labels) * 100))
+    print(task, "Precision: {:.2f}%".format(precision_score(
+        actual_labels, predicted, average='macro')*100))
+    print(task, "Recall: {:.2f}%".format(recall_score(
+        actual_labels, predicted, average='macro')*100))
     # Create arbitrary dataset for example
     # df = pd.DataFrame({'Planned_End': np.random.uniform(low=-5, high=5, size=50),
     #                 'Actual_End':  np.random.uniform(low=-1, high=1, size=50),
@@ -135,19 +137,19 @@ for task in tasks:
     # y = df['Late']
 
     # clf = svm.SVC(decision_function_shape='ovo')
-    # clf.fit(X.values, y.values) 
+    # clf.fit(X.values, y.values)
 
     # Plot Decision Region using mlxtend's awesome plotting function
     clf = KNeighborsClassifier(n_neighbors=15)
-    
+
     X = X_train
     y = Y_train
     clf.fit(X, y)
-    plot_decision_regions(X=X, 
-                        y=y,
-                        clf=clf, 
-                        legend=2,
-                        colors='blue,green,red')
+    plot_decision_regions(X=X,
+                          y=y,
+                          clf=clf,
+                          legend=2,
+                          colors='blue,green,red')
     key = {
         'heel_to_toe': 'Heel To Toe',
         'still': 'Still',
@@ -157,12 +159,10 @@ for task in tasks:
     # Update plot object with X/Y axis labels and Figure Title
     plt.xlabel('Accelerometer Magnitude', size=14)
     plt.ylabel('Gyroscope Magnitude', size=14)
-    plt.title('KNN Decision Region Boundary For ' + key[task] +' task', size=16)
+    plt.title('KNN Decision Region Boundary For ' +
+              key[task] + ' task', size=16)
     plt.show()
 # print(X_train, Y_train)
-
-
-
 
 
 ############## End Model Stuff ############################
