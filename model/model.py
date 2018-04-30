@@ -7,6 +7,7 @@ import pandas as pd
 from mlxtend.plotting import plot_decision_regions
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import precision_score, recall_score, accuracy_score
 ACCEL = 0
 GYRO = 1
 WINDOW_SIZE = 120  # should be x2 since two lines corresponds to one reading
@@ -99,7 +100,6 @@ for task in tasks:
     X_train = None
     Y_train = None
     for file in os.listdir(train_dir):
-        print(file)
         if file == '.DS_Store':  # remove soon
             continue
         features, labels = extract_features_labels(file, task)
@@ -122,6 +122,8 @@ for task in tasks:
     clf.fit(X, y)
     predicted = clf.predict(test)
     print(task, "Accuracy: {:.2f}%".format(np.mean(predicted == actual_labels) * 100))
+    print(task, "Precision: {:.2f}%".format(precision_score(actual_labels, predicted, average='macro')*100))
+    print(task, "Recall: {:.2f}%".format(recall_score(actual_labels, predicted, average='macro')*100))
     # Create arbitrary dataset for example
     # df = pd.DataFrame({'Planned_End': np.random.uniform(low=-5, high=5, size=50),
     #                 'Actual_End':  np.random.uniform(low=-1, high=1, size=50),
@@ -140,7 +142,6 @@ for task in tasks:
     
     X = X_train
     y = Y_train
-    print(X)
     clf.fit(X, y)
     plot_decision_regions(X=X, 
                         y=y,
